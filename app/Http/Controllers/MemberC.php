@@ -6,92 +6,107 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\Member;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
+
 
 class MemberC extends Controller
 {
-    public function getFoodsByIdRes($idres){
-        $foods = DB::table('foods')->where('idres',$idres)->orderBy('idfood','desc')->get();
-        if(DB::table('reslikes')->where([['idres',$idres],['iduser',Session::get('iduser')]])->exists()) $flag = -1;
-        else $flag = 1;
-        $res = DB::table('resmanagers')->where('idres',$idres)->get();
-        $res = $res[0];
-        $foods = array(
-            'foods' => $foods,
-            'res' => $res,
-            'idres' => $idres,
-            'flag'=> $flag
-        );
-        return view('customer/RestaurantFood',compact('foods'));
-    }
 
-    public function information(){
-        return view('director/Information');
+    public function information($iduser){
+        $user = DB::table('user')->where('role',0)->where('iduser', $iduser)
+        ->join('class','class.idclass','=','user.idclass')
+        ->join('major','major.idmajor','=','user.idmajor')
+        ->first();
+        return view('director/Information', compact('user'));
     }
 
     public function memberManager(){
-        return view('director/MemberManager');
+        $users = DB::table('user')->where('role',0)->orderBy('iduser','desc')
+        ->join('class','class.idclass','=','user.idclass')
+        ->join('major','major.idmajor','=','user.idmajor')
+        ->get();
+        return view('director/MemberManager',compact('users'));
     }
 
     public function memberAddForm(){
-        return view('director/AddMember');
+        $classes = DB::table('class')->get();
+        $majors = DB::table('major')->get();
+        $data = array(
+            'classes' => $classes,
+            'majors' => $majors
+        );
+        return view('director/AddMember', compact('data'));
     }
 
-    public function foodEditForm(Request $request){
-        $data = $request->all();
-        $idfood = $data['idfood'];
-        $food = DB::table('foods')->where('idfood', $idfood)->get();
-        $food = $food[0];
-        return view('restaurant/EditFood',compact('food'));
-    }
-
-    public function foodAdd(Request $request){
+    public function addMember(Request $request){
+        Validator::extend('without_spaces', function($attr, $value){
+            return preg_match('/^\S*$/u', $value);
+        });
         $request->validate([
-            'avatar' => ['required','image','mimes:jpg,png,jpeg,gif,svg','max:2048'],
-            'name' => ['required', 'min:5', 'max:100'],
-            'price' => ['required'],
-        ]);
+            'username'=>['required','max:30','min:5','without_spaces','unique:user,username'],
+            'password'=>['required','max:30','min:5','without_spaces', 'confirmed']
+            ]);
         $data = $request->all();
-        if($request->hasFile('avatar')){
-            $image = $request->file('avatar');
-            $str_rd = Str::random(20);
-            $image->move(public_path("/images"),$str_rd.'.jpg');
-            $str_rd = "/images/".$str_rd ;
-            $data = array(
-                'idres' => Session::get('idres'),
-                'name' => $data['name'],
-                'avatar' => $str_rd.'.jpg',
-                'price' => $data['price'],
-            );
-
-            DB::table('foods')->insertGetId($data);
-            return redirect('/FoodManager');
-        }
-
+        $record = array(
+            'username' => $data['username'],
+            'password' => md5($data['password']),
+            'name' => $data['name'],
+            'address' => $data['address'],
+            'address2' => $data['address2'],
+            'birthday' => $data['birthday'],
+            'job' => $data['job'],
+            'ethnic' => $data['ethnic'],
+            'religion' => $data['religion'],
+            'idclass' => $data['idclass'],
+            'sex' => $data['sex'],
+            'idmajor' => $data['idmajor'],
+            'IT' => $data['IT'],
+            'Eng' => $data['Eng'],
+            'phylo' => $data['phylo']
+        );
+        DB::table('user')->insertGetId($record);
+        return redirect('/MemberManager');
     }
 
-    public function foodEdit(Request $request){
-        $request->validate([
-            'avatar' => ['required','image','mimes:jpg,png,jpeg,gif,svg','max:2048'],
-            'name' => ['required', 'min:5', 'max:100'],
-            'price' => ['required'],
-        ]);
+    public function memberEditForm(Request $request){
         $data = $request->all();
-        if($request->hasFile('avatar')){
-            $image = $request->file('avatar');
-            $str_rd = Str::random(20);
-            $image->move(public_path("/images"),$str_rd.'.jpg');
-            $str_rd = "/images/".$str_rd ;
-            $update = array(
-                'name' => $data['name'],
-                'avatar' => $str_rd.'.jpg',
-                'price' => $data['price'],
-            );
-
-            DB::table('foods')->where('idfood', $data['idfood'])->update($update);
-            return redirect('/FoodManager');
-        }
+        $iduser = $data['iduser'];
+        $classes = DB::table('class')->get();
+        $majors = DB::table('major')->get();
+        $user = DB::table('user')->where('role',0)->where('iduser', $iduser)
+        ->join('class','class.idclass','=','user.idclass')
+        ->join('major','major.idmajor','=','user.idmajor')
+        ->first();
+        $data = array(
+            'classes' => $classes,
+            'majors' => $majors,
+            'user' => $user
+        );
+        return view('director/EditMember', compact('data'));
     }
+
+    public function editMember(Request $request){
+        $data = $request->all();
+        $record = array(
+            'name' => $data['name'],
+            'address' => $data['address'],
+            'address2' => $data['address2'],
+            'birthday' => $data['birthday'],
+            'job' => $data['job'],
+            'ethnic' => $data['ethnic'],
+            'religion' => $data['religion'],
+            'idclass' => $data['idclass'],
+            'sex' => $data['sex'],
+            'idmajor' => $data['idmajor'],
+            'IT' => $data['IT'],
+            'Eng' => $data['Eng'],
+            'phylo' => $data['phylo'],
+            'state' => $data['state']
+        );
+        DB::table('user')->where('iduser',$data['iduser'])->update($record);
+        return redirect('/MemberManager');
+    }
+
 }
 
 ?>

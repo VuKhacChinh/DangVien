@@ -4,20 +4,68 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class UserC extends Controller
 {
-    public function changePass(){
-        return view('customer/ChangePass');
+
+    public function home(){
+        $iduser = Session::get('iduser');
+        $user = DB::table('user')->where('role',0)->where('iduser', $iduser)
+        ->join('class','class.idclass','=','user.idclass')
+        ->join('major','major.idmajor','=','user.idmajor')
+        ->first();
+        return view('user/Home', compact('user'));
     }
 
-    public function checkChangePass(Request $request){
+    public function signIn(){
+        return view('together/SignIn');
+    }
+
+    public function checkSignIn(Request $request){
+        $data = $request->all();
+        $newdata = DB::table('user')->where([
+            ['username',$data['username']],
+            ['password',md5($data['password'])]
+        ])->get();
+        
+
+        if($newdata->count()!=0) {
+            if($newdata[0]->active==0) {
+                Session::put('login_mess',"Tài khoản đang bị khóa");
+                return redirect('/SignIn');
+            }
+            Session::put('iduser',$newdata[0]->iduser);
+            Session::put('username',$newdata[0]->username);
+            Session::put('password',$newdata[0]->password);
+            Session::put('role',$newdata[0]->role);
+            if($newdata[0]->role==0) return redirect('/Home');
+            else{
+                if($newdata[0]->role==1) return redirect('/MemberManager');
+                else return redirect('/UserManager');
+            } 
+        }
+        else {
+            Session::put('login_mess',"Thông tin tài khoản hoặc mật khẩu không chính xác");
+            return redirect('/SignIn');
+        }
+    }
+
+    public function changePassForm(){
+        return view('together/ChangePass');
+    }
+
+    public function changePass(Request $request){
+        Validator::extend('without_spaces', function($attr, $value){
+            return preg_match('/^\S*$/u', $value);
+        });
+        $request->validate([
+            'new_pass'=>['required','max:30','min:5','without_spaces']
+        ]);
         $data = $request->all();
         $newpass = $data['new_pass'];
-        DB::table('users')->where('username',Session::get('username'))->update([
+        DB::table('user')->where('iduser',Session::get('iduser'))->update([
             'password' => md5($newpass)
         ]);
         Session::flush();
@@ -25,39 +73,11 @@ class UserC extends Controller
         return redirect('/SignIn');
     }
 
-    public function changeInfo(){
-        return view('customer/ChangeInfo');
-    }
-
-    public function checkChangeInfo(Request $request){
-        $request->validate([
-            'avatar' => ['required','image','mimes:jpg,png,jpeg,gif,svg','max:2048'],
-            'name' => ['required', 'min:5', 'max:100'],
-            'address' => ['required', 'min:1', 'max: 200'],
-        ]);
-        $data = $request->all();
-        if($request->hasFile('avatar')){
-            $image = $request->file('avatar');
-            $str_rd = Str::random(20);
-            $image->move(public_path("/images"),$str_rd.'.jpg');
-            $str_rd = "/images/".$str_rd ;
-            $update = array(
-                'name' => $data['name'],
-                'avatar' => $str_rd.'.jpg',
-                'address' => $data['address'],
-            );
-            DB::table('users')->where('iduser', Session::get('iduser'))->update($update);
-            Session::put('name', $update['name']);
-            Session::put('avatar', $update['avatar']);
-            Session::put('address', $update['address']);
-            return redirect('/Home');
-        }
-    }
-
     public function signOut(){
         Session::flush();
         return redirect('/SignIn');
     }
+
 }
 
 ?>

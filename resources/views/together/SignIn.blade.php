@@ -22,8 +22,6 @@
 <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 
 
-<!-- Style --> <link rel="stylesheet" href="css/style.css" type="text/css" media="all">
-
 <!-- Fonts -->
 <!-- //Fonts -->
 
@@ -31,46 +29,19 @@
 <!-- //Head -->
 
 <!-- Body -->
-<body style="height: 100vh; overflow-y: hidden">
-
-	<h1>Mạng xã hội đồ ăn</h1>
-
-	<div class="w3layoutscontaineragileits d-flex flex-column algin-items-center justify-content-center">
-	    <h2>FoodNet</h2>
-		<form action="checkPassword" method="post" class="w-100">
+<body style="height: 100vh; overflow-y: hidden; background-image: linear-gradient(to right, white, pink);" class="d-flex flex-column justify-content-center align-items-center">
+	<div class="w-25 p-3 d-flex flex-column algin-items-center justify-content-center" style="background-color: white;">
+	    <h2 class="text-center text-success">Đăng nhập</h2>
+		<form action="CheckSignIn" method="post" class="w-100 d-flex flex-column">
 		@csrf
-			<input type="text" Name="username" placeholder="Tên tài khoản" required="">
-			<input type="password" Name="password" placeholder="Mật khẩu" required="">
-			<ul class="agileinfotickwthree">
-				<li class="text-center d-flex justify-content-around">
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="type" id="flexRadioDefault1" value="user" checked>
-						<label class="form-check-label text-light" for="flexRadioDefault1">
-							Khách hàng
-						</label>
-					</div>
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="type" value="admin" id="flexRadioDefault2">
-						<label class="form-check-label text-light" for="flexRadioDefault2">
-							Quản trị viên
-						</label>
-					</div>
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="type" value="res" id="flexRadioDefault3">
-						<label class="form-check-label text-light" for="flexRadioDefault3">
-							Nhà hàng
-						</label>
-					</div>
-				</li>
-			</ul>
-			<div class="aitssendbuttonw3ls p-3">
-				<input type="submit" value="Đăng nhập">
-				<p class="w-100 row align-items-center"><span class="col-8">Khách hàng chưa có tài khoản:</span> <a class="col-4" href="/SignUp"> Đăng kí</a></p>
-				<div class="clear"></div>
+			<input class="p-2 m-2 border border-2 border-success" type="text" name="username" placeholder="Tên tài khoản" required="">
+			<input class="p-2 m-2 border border-2 border-success" type="password" name="password" placeholder="Mật khẩu" required="">
+			<div class="p-3 text-center">
+				<input type="submit" class="btn btn-success" value="Đăng nhập">
 			</div>
 		</form>
 	</div>
-    <p id="warning" class="h4 text-warning text-center">
+    <p id="warning" class="h4 text-danger text-center">
     <?php
         if(Session::has('login_mess')){
             echo Session::get('login_mess');
@@ -78,13 +49,7 @@
         }
     ?>
     </p>
-	
-
-	<!-- pop-up-box-js-file -->  
-		<script src="js/jquery.magnific-popup.js" type="text/javascript"></script>
-	<!--//pop-up-box-js-file -->
 	<script>
-		
         setTimeout(function(){
             $('#warning').remove();
         },3000);

@@ -1,4 +1,4 @@
-<?php include("managerHeader.php") ?>
+<?php include("userHeader.php") ?>
             <div class="d-flex flex-column align-items-center bg-light" style="width:50%; margin-left: auto; margin-right: auto; margin-top: 10px;">
                 <div class="text-start w-100 m-3">
                     <h3 class="text-center text-primary p-1" style="border-bottom: 2px solid orange">Thông tin đảng viên</h3>

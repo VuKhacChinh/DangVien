@@ -1,8 +1,8 @@
 <?php include("managerHeader.php") ?>
             <div class="d-flex flex-column align-items-center" style="width:80%; margin-left: 18%">
-                <div class="text-center m-2"><a href="/AddMember" class="btn btn-outline-info">Thêm đảng viên</a></div>
-                <table class="table table-dark table-hover text-light text-center">
-                    <thead class="text-info">
+                <div class="text-center m-2"><a href="/AddMember" class="btn btn-success">Thêm đảng viên</a></div>
+                <table class="table table-light table-hover text-dark text-center">
+                    <thead class="text-success">
                         <tr>
                             <th scope="col">Họ và tên</th>
                             <th scope="col">Ngày sinh</th>
@@ -16,51 +16,36 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($users as $user)
                             <tr>
-                                <td>Long</td>
-                                <td>14/08/2000</td>
-                                <td>Nam</td>
-                                <td>Hà Nội</td>
-                                <td>Hoàng Main, Hà Nội</td>
-                                <td>Kinh</td>
-                                <td>Không</td>
+                                <td>{{$user->name}}</td>
+                                <td>{{$user->birthday}}</td>
+                                <td>{{$user->sex}}</td>
+                                <td>{{$user->address}}</td>
+                                <td>{{$user->address2}}</td>
+                                <td>{{$user->ethnic}}</td>
+                                <td>{{$user->religion}}</td>
                                 <td>
-                                    <select class="bg-primary text-light p-1">
-                                        <option>
-                                            Đang hoạt động
-                                        </option>
-                                        <option>
-                                            Đảng ủy khác
-                                        </option>
-                                    </select>
+                                    @if($user->state==0)
+                                        Đangr ủy khác
+                                    @elseif($user->state==1)
+                                        Đang hoạt động
+                                    @else
+                                        Dự bị
+                                    @endif
                                 </td>
                                 <td class="d-flex justify-content-center">
-                                    <a class="more btn btn-success m-1" href="/Information">Chi tiết</a>
-                                    <form action="/EditFood" class="m-1">
-                                        <input type='hidden' value="1" name='idfood'/>
-                                        <button class="edit btn btn-info">Sửa</button>
+                                    <a class="more btn btn-primary m-1" href="/Information/{{$user->iduser}}"><i class="fas fa-eye"></i></a>
+                                    <form action="/EditMember" class="m-1">
+                                        <input type='hidden' value="{{$user->iduser}}" name='iduser'/>
+                                        <button class="edit btn btn-success"><i class="fas fa-pen"></i></button>
                                     </form>
                                 </td>
                             </tr>
-
+                        @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
-        <script>
-            $('.delete').click(function(){
-                let isDelete = confirm("Bạn có muốn xóa?");
-                if(!isDelete) return;
-                let e = $(this);
-                let idfood = parseInt(e.val());
-                
-                let data = {
-                    'idfood': idfood,
-                }
-                $.get('/Ajax/FoodDelete',data, function(data){
-                    window.location.reload();
-                });
-            });
-        </script>
     </body>
 </html>

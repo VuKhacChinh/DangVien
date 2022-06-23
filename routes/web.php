@@ -7,6 +7,8 @@ use App\Http\Controllers\SignUp;
 use App\Http\Controllers\MemberC;
 use App\Http\Controllers\UserC;
 use App\Http\Controllers\IndexC;
+use App\Http\Controllers\NotifyC;
+use App\Http\Controllers\MessageC;
 use App\Http\Controllers\TeamC;
 use App\Http\Controllers\PromotionC;
 use App\Http\Controllers\OrderC;
@@ -28,80 +30,39 @@ use App\Http\Controllers\AdminC;
 |
 */
 
-Route::get('/Home',[Home::class,'home']);
-
-Route::get('/SignIn',[SignIn::class,'signIn']);
-
-Route::get('/SignUp',[SignUp::class,'signUp']);
-
-Route::get('/SignOut',[UserC::class,'signOut']);
-
-Route::post('/checkSignUp',[SignUp::class,'checkSignUp']);
-
-Route::post('/checkPassword',[SignIn::class,'checkPassword']);
-
-Route::get('/Notification', [PromotionC::class,'getPromotions']);
-
-Route::get('/Restaurant',[ResManager::class,'getAllResTaurant']);
-
-Route::get('/NearRestaurant',[ResManager::class,'getNearRes']);
-
-Route::get('/FavoriteRestaurant', [ResManager::class,'getFavoriteRes']);
-
-Route::get('/GoodFood', function(){
-    return view('GoodFood');
-});
-
-Route::get('/FavoriteFood', function(){
-    return view('FavoriteFood');
-});
-
-Route::get('/SearchRestaurant',[ResManager::class,'searchRes']);
-
-Route::get('/RestaurantDetail/{idres}',[ResManager::class,'getResById']);
-
-Route::get('/RestaurantFood/{idres}',[FoodC::class,'getFoodsByIdRes']);
-
-Route::get('/RestaurantPromotion/{idres}',[PromotionC::class,'getPromotionsByIdRes']);
-
-Route::get('/Review/{idres}',[ReviewC::class,'getReviewsByIdRes']);
-
-Route::get('/Review/{idres}/{numstar}',[ReviewC::class,'filterReviews']);
-
-Route::get('/Messenger/{idteam}',[TeamC::class, 'getTeamById']);
-
-Route::get('/Ajax/joinTeam',[Ajax::class,'joinTeam']);
-Route::get('/Ajax/getLastTeam',[Ajax::class,'getLastTeam']);
-Route::get('/Ajax/makeOrder',[Ajax::class,'makeOrder']);
-Route::get('/Ajax/addMember',[Ajax::class,'addMember']);
-Route::get('/Ajax/outTeam',[Ajax::class,'outTeam']);
-Route::get('/Ajax/sendReview',[Ajax::class,'sendReview']);
-Route::get('/Ajax/likeRes',[Ajax::class,'likeRes']);
-Route::get('/Ajax/Chat',[Ajax::class,'chat']);
-
-Route::get('/ChangePass',[UserC::class, 'changePass']);
-Route::post('/ChangePass',[UserC::class, 'checkChangePass']);
-
-Route::get('/ChangeInfo',[UserC::class, 'changeInfo']);
-Route::post('/ChangeInfo',[UserC::class, 'checkChangeInfo']);
-
-Route::get('/UserManager',[AdminC::class, 'userManager']);
-Route::get('/ResManager',[AdminC::class, 'resManager']);
-Route::get('/AdminManager',[AdminC::class, 'adminManager']);
-Route::get('/Ajax/ClockFunc',[Ajax::class, 'clockFunc']);
-
-Route::post('/AddAdmin',[AdminC::class, 'addAdmin']);
-Route::post('/AddRes',[ResManager::class, 'addRes']);
-
+//director
 
 Route::get('/MemberManager',[MemberC::class, 'memberManager']);
-Route::get('/BranchManager',[PromotionC::class, 'proManager']);
-Route::get('/FeatureManager',[ReviewC::class,'featureManager']);
-Route::get('/Information',[MemberC::class, 'information']);
-Route::get('/CarTypeManager',[PostC::class, 'postManager']);
-Route::get('/AddressManager',[AddressC::class, 'addressManager']);
-Route::get('/DataManager',[DataC::class, 'dataManager']);
+Route::get('/Information/{iduser}',[MemberC::class, 'information']);
 
-Route::get('/Ajax/FoodDelete',[Ajax::class, 'foodDelete']);
 Route::get('/AddMember',[MemberC::class, 'memberAddForm']);
-Route::get('/IndexManager',[IndexC::class, 'indexManager']);
+Route::post('/AddMember',[MemberC::class, 'addMember']);
+Route::get('/EditMember',[MemberC::class, 'memberEditForm']);
+Route::post('/EditMember',[MemberC::class, 'editMember']);
+Route::get('/IndexManager/{type}',[IndexC::class, 'indexManager']);
+Route::get('/NotifyManager',[NotifyC::class, 'notifyManager']);
+Route::get('/ListChat',[MessageC::class, 'listChat']);
+
+Route::get('/Ajax/DeleteIndex',[Ajax::class, 'deleteIndex']);
+Route::get('/Ajax/AddIndex',[Ajax::class, 'addIndex']);
+Route::get('/Ajax/EditIndex',[Ajax::class, 'editIndex']);
+
+Route::get('/Ajax/DeleteNotify',[Ajax::class, 'deleteNotify']);
+Route::get('/Ajax/AddNotify',[Ajax::class, 'addNotify']);
+Route::get('/Ajax/EditNotify',[Ajax::class, 'editNotify']);
+
+Route::get('/DirectorMessenger/{iduser}',[MessageC::class, 'directorMessenger']);
+
+// user
+Route::get('/Home',[UserC::class,'home']);
+Route::get('/Notify',[NotifyC::class,'notify']);
+Route::get('/UserMessenger',[MessageC::class, 'userMessenger']);
+
+//together
+
+Route::get('/SignIn',[UserC::class,'signIn']);
+Route::get('/SignOut',[UserC::class,'signOut']);
+Route::post('/CheckSignIn',[UserC::class,'checkSignIn']);
+Route::get('/ChangePass',[UserC::class, 'changePassForm']);
+Route::post('/ChangePass',[UserC::class, 'changePass']);
+Route::get('/Ajax/Chat',[Ajax::class,'chat']);
