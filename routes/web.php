@@ -2,23 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Ajax;
-use App\Http\Controllers\SignIn;
-use App\Http\Controllers\SignUp;
 use App\Http\Controllers\MemberC;
 use App\Http\Controllers\UserC;
 use App\Http\Controllers\IndexC;
 use App\Http\Controllers\NotifyC;
 use App\Http\Controllers\MessageC;
-use App\Http\Controllers\TeamC;
-use App\Http\Controllers\PromotionC;
-use App\Http\Controllers\OrderC;
-use App\Http\Controllers\AddressC;
-use App\Http\Controllers\DataC;
-use App\Http\Controllers\PostC;
-use App\Http\Controllers\Home;
-use App\Http\Controllers\ResManager;
 
-use App\Http\Controllers\AdminC;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
