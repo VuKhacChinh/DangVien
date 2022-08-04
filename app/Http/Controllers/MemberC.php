@@ -43,8 +43,8 @@ class MemberC extends Controller
             return preg_match('/^\S*$/u', $value);
         });
         $request->validate([
-            'username'=>['required','max:30','min:5','without_spaces','unique:user,username'],
-            'password'=>['required','max:30','min:5','without_spaces', 'confirmed']
+            'username'=>['required','max:30','min:1','without_spaces','unique:user,username'],
+            'password'=>['required','max:30','min:1','without_spaces', 'confirmed']
             ]);
         $data = $request->all();
         $record = array(

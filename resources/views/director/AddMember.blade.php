@@ -46,7 +46,7 @@
                                 <label class="col-3">Giới tính</label>
                                 <div class="col-9 d-flex justify-content-around">
                                     <div>
-                                        <input type="radio" name="sex" value="Name" checked="check">
+                                        <input type="radio" name="sex" value="Nam" checked="check">
                                         <label for="sex">Nam</label>
                                     </div>
                                     <div>
